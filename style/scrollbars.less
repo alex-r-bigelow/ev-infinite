@@ -1,0 +1,72 @@
+@import './colors.less';
+@import './measurements.less';
+
+::-webkit-scrollbar {
+  width: 1em;
+}
+
+/* Track, Corner background color */
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+  background: rgba(0,0,0,0);
+}
+/* Round off three corners */
+::-webkit-scrollbar-track:horizontal {
+  border-radius: 0 0 0 @borderRadius;
+}
+::-webkit-scrollbar-track:vertical {
+  border-radius: 0 @borderRadius 0 0;
+}
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+  border-radius: 0 0 @borderRadius 0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: @borderRadius;
+  // border: 1px solid @shadowColor;
+  &:hover {
+    cursor: grab;
+  }
+  &:active {
+    cursor: grabbing;
+  }
+}
+::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(to bottom, @interactingGradientStops);
+  &:hover {
+    background: linear-gradient(to bottom, @interactingHoverGradientStops);
+  }
+  &:active {
+    background: linear-gradient(to bottom, @interactingActiveGradientStops);
+  }
+}
+::-webkit-scrollbar-thumb:vertical {
+  background: linear-gradient(to right, @interactingGradientStops);
+  &:hover {
+    background: linear-gradient(to right, @interactingHoverGradientStops);
+  }
+  &:active {
+    background: linear-gradient(to right, @interactingActiveGradientStops);
+  }
+}
+::-webkit-scrollbar-thumb:horizontal:window-inactive {
+  background: linear-gradient(to bottom, @interactableGradientStops);
+  &:hover {
+    background: linear-gradient(to bottom, @interactableHoverGradientStops);
+  }
+  &:active {
+    background: linear-gradient(to bottom, @interactableActiveGradientStops);
+  }
+}
+::-webkit-scrollbar-thumb:vertical:window-inactive {
+  background: linear-gradient(to right, @interactableGradientStops);
+  &:hover {
+    background: linear-gradient(to right, @interactableHoverGradientStops);
+  }
+  &:active {
+    background: linear-gradient(to right, @interactableActiveGradientStops);
+  }
+}

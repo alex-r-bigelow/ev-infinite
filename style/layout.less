@@ -1,0 +1,34 @@
+@import './colors.less';
+@import './measurements.less';
+
+@hudSize: 20em;
+
+.ViewportView, .hud {
+  position: absolute;
+  top: @contentPadding;
+  bottom: @contentPadding;
+}
+.ViewportView {
+  left: @contentPadding;
+  width: calc(100% - @hudSize - 3 * @contentPadding);
+}
+.hud {
+  right: @contentPadding;
+  width: @hudSize;
+
+  display: flex;
+  flex-direction: column;
+}
+.MessageBoxView {
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.ViewportView, .MiniMapView, .StatusBarView, .MessageBoxView {
+  border: 1px solid @backgroundColor;
+  border-radius: @borderRadius;
+  background-color: @darkestBackgroundColor;
+}
+.StatusBarView, .MessageBoxView {
+  margin-top: @contentPadding;
+}

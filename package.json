@@ -1,0 +1,28 @@
+{
+  "name": "ev-infinite",
+  "version": "0.1.0",
+  "description": "Silly attempt to make a browser-based Escape Velocity clone",
+  "main": "index.js",
+  "scripts": {
+    "serve": "serve .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex-r-bigelow/ev-infinite.git"
+  },
+  "author": "Alex Bigelow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alex-r-bigelow/ev-infinite/issues"
+  },
+  "homepage": "https://github.com/alex-r-bigelow/ev-infinite#readme",
+  "dependencies": {
+    "d3": "^5.9.7",
+    "less": "^3.9.0",
+    "uki": "^0.3.0"
+  },
+  "devDependencies": {
+    "serve": "^11.0.2"
+  }
+}
