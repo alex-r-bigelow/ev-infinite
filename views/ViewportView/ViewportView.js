@@ -10,12 +10,36 @@ class ViewportView extends View {
   }
   setup () {
     this.d3el.html(this.resources[1]);
+
+    this.setupPlayerShip();
   }
   draw () {
-    const bounds = this.d3el.node().getBoundingClientRect();
-    this.d3el.select('svg')
-      .attr('width', bounds.width)
-      .attr('height', bounds.height);
+    this._bounds = this.d3el.node().getBoundingClientRect();
+    this.d3el.selectAll('svg, canvas')
+      .attr('width', this._bounds.width)
+      .attr('height', this._bounds.height);
+
+    this.quickDrawReady = true;
+    this.quickDraw();
+  }
+  quickDraw () {
+    if (this.quickDrawReady) {
+      this.drawPlayerShip();
+      this.drawStarField();
+    }
+  }
+  drawStarField () {
+    // TODO
+  }
+  setupPlayerShip () {
+    const ship = window.controller.playerShip.currentShip;
+    this.d3el.select('.playerShip')
+      .html(ship.getSvg());
+  }
+  drawPlayerShip () {
+    const ship = window.controller.playerShip.currentShip;
+    this.d3el.select('.playerShip')
+      .attr('transform', `translate(${this._bounds.width / 2},${this._bounds.height / 2}) rotate(${180 * ship.direction / Math.PI})`);
   }
 }
 export default ViewportView;
