@@ -26,4 +26,10 @@ node_modules/less/dist/*
 
 !node_modules/seedrandom/
 node_modules/seedrandom/*
-!node_modules/seedrandom/seedrandom.min.js
+!node_modules/seedrandom/less.min.js
+
+!node_modules/jStat/
+node_modules/jStat/*
+!node_modules/jStat/dist/
+node_modules/jStat/dist/*
+!node_modules/jStat/dist/jstat.min.js

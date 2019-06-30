@@ -1,5 +1,4 @@
 /* globals d3 */
-import seedrandom from '../../solarSystem_modules/seedrandom/seedrandom.min.js';
 import SolarSystem from '../SolarSystem/SolarSystem.js';
 
 class Cell {
@@ -11,7 +10,7 @@ class Cell {
     // the radius, there will be no stars
     const starDensity = 1 - (this.coordinates.x ** 2 + this.coordinates.y ** 2) / radius ** 2;
 
-    const numberGenerator = seedrandom(this.coordinates);
+    const numberGenerator = new Math.seedrandom(this.coordinates); // eslint-disable-line new-cap
     this.cellId = numberGenerator.int32();
 
     // 1. How many solarSystems in this cell?
@@ -52,7 +51,7 @@ class Cell {
     if (this.links) {
       return this.links;
     }
-    const numberGenerator = seedrandom(this.internalLinkSeed);
+    const numberGenerator = new Math.seedrandom(this.internalLinkSeed); // eslint-disable-line new-cap
     this.links = Cell.VORONOI(this.solarSystems).links()
       .filter(d => this.discourageLongLinks(d, numberGenerator));
     return this.links;
@@ -61,7 +60,7 @@ class Cell {
     if (this.rightLinks) {
       return this.rightLinks;
     }
-    const numberGenerator = seedrandom(this.rightLinkSeed);
+    const numberGenerator = new Math.seedrandom(this.rightLinkSeed); // eslint-disable-line new-cap
     const allSolarSystems = this.solarSystems.concat(rightCell.solarSystems);
     this.rightLinks = Cell.VORONOI(allSolarSystems).links()
       .filter(d => {
@@ -79,7 +78,7 @@ class Cell {
     if (this.bottomLinks) {
       return this.bottomLinks;
     }
-    const numberGenerator = seedrandom(this.bottomLinkSeed);
+    const numberGenerator = new Math.seedrandom(this.bottomLinkSeed); // eslint-disable-line new-cap
     const allSolarSystems = this.solarSystems.concat(bottomCell.solarSystems);
     this.bottomLinks = Cell.VORONOI(allSolarSystems).links()
       .filter(d => {

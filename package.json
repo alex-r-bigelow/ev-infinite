@@ -19,6 +19,7 @@
   "homepage": "https://github.com/alex-r-bigelow/ev-infinite#readme",
   "dependencies": {
     "d3": "^5.9.7",
+    "jStat": "^1.8.5",
     "less": "^3.9.0",
     "noisejs": "^2.1.0",
     "seedrandom": "^3.0.1",

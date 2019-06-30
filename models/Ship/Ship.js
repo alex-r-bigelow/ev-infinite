@@ -1,6 +1,7 @@
 import { Model } from '../../node_modules/uki/dist/uki.esm.js';
+import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
 
-class Ship extends Model {
+class Ship extends IntrospectableMixin(Model) {
   constructor () {
     super();
     this.direction = 0;

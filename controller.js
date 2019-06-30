@@ -1,15 +1,20 @@
 import keyBindings from './config/keyBindings.js';
 
 import PlayerShip from './models/PlayerShip/PlayerShip.js';
+import Galaxy from './models/Universe/Galaxy.js';
 
 import ViewportView from './views/ViewportView/ViewportView.js';
+import MiniMapView from './views/MiniMapView/MiniMapView.js';
 
 class Controller {
   constructor () {
+    this.universe = new Galaxy(100);
+    this.currentSystem = this.universe.getASolarSystem();
     this.playerShip = new PlayerShip();
 
     this.views = {
-      ViewportView: new ViewportView()
+      ViewportView: new ViewportView(),
+      MiniMapView: new MiniMapView()
     };
     this.setupEventListeners();
   }
@@ -39,6 +44,8 @@ class Controller {
     }
   }
   update () {
+    // TODO: show / hide modals
+
     // Respond to user input
     if (this.pressedKeys[keyBindings['turnLeft']]) {
       this.playerShip.currentShip.turnLeft();
