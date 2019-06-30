@@ -21,7 +21,7 @@ class Ship extends Model {
   getSvg () {
     // Dummy placeholder that just draws a triangle; do something sexier in the future
     const backRadius = this.radius * Math.sqrt(2) / 2;
-    return `<path fill="#bada55" d="M${this.radius},0L${-backRadius},${backRadius}L${-backRadius},${-backRadius}Z"></path>`;
+    return `<path fill="#E6AB02" d="M${this.radius},0L${-backRadius},${backRadius}L${-backRadius},${-backRadius}Z"></path>`;
   }
   turnLeft () {
     this.direction = (this.direction - this.turnRate) % (2 * Math.PI);

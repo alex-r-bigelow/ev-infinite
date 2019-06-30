@@ -23,3 +23,7 @@ node_modules/less/*
 !node_modules/less/dist/
 node_modules/less/dist/*
 !node_modules/less/dist/less.min.js
+
+!node_modules/seedrandom/
+node_modules/seedrandom/*
+!node_modules/seedrandom/seedrandom.min.js
