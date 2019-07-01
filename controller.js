@@ -1,3 +1,4 @@
+/* globals d3 */
 import keyBindings from './config/keyBindings.js';
 
 import PlayerShip from './models/PlayerShip/PlayerShip.js';
@@ -6,8 +7,12 @@ import Galaxy from './models/Universe/Galaxy.js';
 import ViewportView from './views/ViewportView/ViewportView.js';
 import MiniMapView from './views/MiniMapView/MiniMapView.js';
 
+import MapView from './views/MapView/MapView.js';
+
 class Controller {
   constructor () {
+    this.paused = false;
+
     this.universe = new Galaxy(100);
     this.currentSystem = this.universe.getASolarSystem();
     this.playerShip = new PlayerShip();
@@ -29,6 +34,17 @@ class Controller {
     };
     window.onkeydown = event => {
       this.pressedKeys[event.key] = true;
+
+      if (event.key === keyBindings['pause']) {
+        if (this.paused && !this.modal) {
+          this.resume();
+        } else {
+          this.pause();
+        }
+      }
+      if (event.key === keyBindings['showMap']) {
+        this.pause(MapView);
+      }
     };
     window.onkeyup = event => {
       delete this.pressedKeys[event.key];
@@ -44,7 +60,10 @@ class Controller {
     }
   }
   update () {
-    // TODO: show / hide modals
+    // Don't update any game state while paused
+    if (this.paused) {
+      return;
+    }
 
     // Respond to user input
     if (this.pressedKeys[keyBindings['turnLeft']]) {
@@ -78,6 +97,24 @@ class Controller {
       window.requestAnimationFrame(frame);
     };
     window.requestAnimationFrame(frame);
+  }
+  pause (Modal) {
+    if (this.paused) {
+      // already paused
+      return;
+    }
+    this.paused = true;
+    if (!Modal) {
+      d3.select('.modal .contents').html(`<h1>Paused</h1><p>Hit ${keyBindings['pause']} to resume</p>`);
+    } else {
+      this.modal = new Modal();
+    }
+    d3.select('.modal').style('display', null);
+  }
+  resume () {
+    this.paused = false;
+    delete this.modal;
+    d3.select('.modal').style('display', 'none');
   }
 }
 

@@ -24,30 +24,3 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.35em;
   color: @accentColor;
 }
-
-.modal {
-  background-color: @backgroundColor;
-  position: absolute;
-  border-radius: @borderRadius;
-  padding: 1em;
-
-  &.defaultStyling {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    min-width: 30em;
-    height: fit-content;
-  }
-  .prompt {
-    margin: 1em auto;
-  }
-  .dialogButtons {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    .button {
-      margin-left: 1em;
-    }
-  }
-}

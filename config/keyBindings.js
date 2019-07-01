@@ -1,4 +1,6 @@
 export default {
   'turnLeft': 'a',
-  'turnRight': 'd'
+  'turnRight': 'd',
+  'pause': 'Escape',
+  'showMap': 'm'
 };

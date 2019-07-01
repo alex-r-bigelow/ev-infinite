@@ -34,3 +34,37 @@
 .StatusBarView, .MessageBoxView {
   margin-top: @contentPadding;
 }
+
+.modal {
+  .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: fade(@shadowColor, 90%);
+  }
+  .contents {
+    background-color: @darkestBackgroundColor;
+    border: 1px solid @backgroundColor;
+    border-radius: @borderRadius;
+    padding: 1em;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    min-width: 30em;
+    height: fit-content;
+
+    .dialogButtons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .button {
+        margin-left: 1em;
+      }
+    }
+  }
+}
