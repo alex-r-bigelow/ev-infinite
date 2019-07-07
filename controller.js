@@ -13,7 +13,7 @@ class Controller {
   constructor () {
     this.paused = false;
 
-    this.universe = new Galaxy(100);
+    this.universe = new Galaxy(10);
     this.currentSystem = this.universe.getASolarSystem();
     this.playerShip = new PlayerShip();
 
@@ -57,6 +57,9 @@ class Controller {
       } else {
         view.render();
       }
+    }
+    if (!quick && this.modal) {
+      this.modal.render();
     }
   }
   update () {

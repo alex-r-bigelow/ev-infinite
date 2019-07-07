@@ -28,7 +28,7 @@ class Cell {
         x: this.coordinates.x + Math.round(20 * numberGenerator()) / 20,
         y: this.coordinates.y + Math.round(20 * numberGenerator()) / 20
       });
-      const key = newSolarSystem.x + '_' + newSolarSystem.y;
+      const key = newSolarSystem.coordinates.x + '_' + newSolarSystem.coordinates.y;
       if (!locations[key]) {
         // Prevent solarSystems from being in the same place... even though the odds are small,
         // the galaxy is huge... so it's going to happen at some point, by definition
@@ -44,8 +44,10 @@ class Cell {
     this.bottomLinkSeed = numberGenerator.int32();
   }
   discourageLongLinks (link, numberGenerator) {
-    return numberGenerator() <= 1 - Math.sqrt((link.target.x - link.source.x) ** 2 +
-                                              (link.target.y - link.source.y) ** 2);
+    const length = Math.sqrt(
+      (link.target.coordinates.x - link.source.coordinates.x) ** 2 +
+      (link.target.coordinates.y - link.source.coordinates.y) ** 2);
+    return numberGenerator() <= 1 - length;
   }
   generateInternalLinks () {
     if (this.links) {
@@ -65,8 +67,11 @@ class Cell {
     this.rightLinks = Cell.VORONOI(allSolarSystems).links()
       .filter(d => {
         // Only consider edges that cross between cells
-        if ((d.source.x < this.coordinates.x + 1 && d.target.x >= this.coordinates.x + 1) ||
-            (d.target.x < this.coordinates.x + 1 && d.source.x >= this.coordinates.x + 1)) {
+        const sourceLeft = d.source.coordinates.x < this.coordinates.x + 1;
+        const targetRight = d.target.coordinates.x >= this.coordinates.x + 1;
+        const targetLeft = d.target.coordinates.x < this.coordinates.x + 1;
+        const sourceRight = d.source.coordinates.x >= this.coordinates.x + 1;
+        if ((sourceLeft && targetRight) || (targetLeft && sourceRight)) {
           return this.discourageLongLinks(d, numberGenerator);
         } else {
           return false;
@@ -83,8 +88,11 @@ class Cell {
     this.bottomLinks = Cell.VORONOI(allSolarSystems).links()
       .filter(d => {
         // Only consider edges that cross between cells
-        if ((d.source.y < this.coordinates.y + 1 && d.target.y >= this.coordinates.y + 1) ||
-            (d.target.y < this.coordinates.y + 1 && d.source.y >= this.coordinates.y + 1)) {
+        const sourceTop = d.source.coordinates.y < this.coordinates.y + 1;
+        const targetBottom = d.target.coordinates.y >= this.coordinates.y + 1;
+        const targetTop = d.target.coordinates.y < this.coordinates.y + 1;
+        const sourceBottom = d.source.coordinates.y >= this.coordinates.y + 1;
+        if ((sourceTop && targetBottom) || (targetTop && sourceBottom)) {
           return this.discourageLongLinks(d, numberGenerator);
         } else {
           return false;
@@ -96,7 +104,7 @@ class Cell {
 
 // For all solarSystems, we want precision to two decimal places past zero;
 // Javascript can support about 13 digits with that precision
-Cell.VORONOI = d3.voronoi().x(d => d.x).y(d => d.y);
+Cell.VORONOI = d3.voronoi().x(d => d.coordinates.x).y(d => d.coordinates.y);
 Cell.PERCENTAGE_OF_LINKS_TO_KEEP = 0.25;
 Cell.MIN_NODES = 5;
 Cell.MAX_NODES = 15;

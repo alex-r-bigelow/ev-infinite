@@ -1,4 +1,4 @@
-/* globals d3, jStat */
+/* globals  jStat */
 import { Model } from '../../node_modules/uki/dist/uki.esm.js';
 import Star from './bodies/Star.js';
 import Planet from './bodies/Planet.js';
