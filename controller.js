@@ -13,7 +13,7 @@ class Controller {
   constructor () {
     this.paused = false;
 
-    this.universe = new Galaxy(2);
+    this.universe = new Galaxy(15);
     this.currentSystem = this.universe.getASolarSystem();
     this.playerShip = new PlayerShip();
 
@@ -81,8 +81,11 @@ class Controller {
 
     // TODO: AI actions...
 
-    // Physics updates
+    // Game physics updates
     this.playerShip.currentShip.tick();
+
+    // ViewportView needs to tick with the clock as well for some of its effects
+    this.views.ViewportView.tick();
   }
   startGameLoop () {
     const timestamp = () => {

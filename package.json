@@ -23,6 +23,7 @@
     "less": "^3.9.0",
     "noisejs": "^2.1.0",
     "seedrandom": "^3.0.1",
+    "three": "^0.106.2",
     "uki": "^0.3.0"
   },
   "devDependencies": {
