@@ -26,7 +26,7 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
   border-radius: @borderRadius;
-  // border: 1px solid @shadowColor;
+  border: 1px solid @shadowColor;
   &:hover {
     cursor: grab;
   }
@@ -35,21 +35,21 @@
   }
 }
 ::-webkit-scrollbar-thumb:horizontal {
-  background: linear-gradient(to bottom, @interactingGradientStops);
+  background: linear-gradient(to bottom, @selectedGradientStops);
   &:hover {
-    background: linear-gradient(to bottom, @interactingHoverGradientStops);
+    background: linear-gradient(to bottom, @selectedHoverGradientStops);
   }
   &:active {
-    background: linear-gradient(to bottom, @interactingActiveGradientStops);
+    background: linear-gradient(to bottom, @selectedActiveGradientStops);
   }
 }
 ::-webkit-scrollbar-thumb:vertical {
-  background: linear-gradient(to right, @interactingGradientStops);
+  background: linear-gradient(to right, @selectedGradientStops);
   &:hover {
-    background: linear-gradient(to right, @interactingHoverGradientStops);
+    background: linear-gradient(to right, @selectedHoverGradientStops);
   }
   &:active {
-    background: linear-gradient(to right, @interactingActiveGradientStops);
+    background: linear-gradient(to right, @selectedActiveGradientStops);
   }
 }
 ::-webkit-scrollbar-thumb:horizontal:window-inactive {

@@ -53,7 +53,7 @@ class MapView extends Modal {
     const systemsEnter = systems.enter().append('g').classed('system', true);
     systems = systems.merge(systemsEnter);
 
-    systemsEnter.append('circle').attr('r', 5);
+    systemsEnter.append('circle').attr('r', 4);
 
     systems.attr('transform', d => {
       const x = xScale(d.coordinates.x);

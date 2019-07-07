@@ -13,7 +13,7 @@ class Controller {
   constructor () {
     this.paused = false;
 
-    this.universe = new Galaxy(10);
+    this.universe = new Galaxy(2);
     this.currentSystem = this.universe.getASolarSystem();
     this.playerShip = new PlayerShip();
 

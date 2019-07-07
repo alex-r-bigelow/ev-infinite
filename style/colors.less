@@ -83,37 +83,18 @@ Gradients:
 @tempLight: desaturate(@lightBackgroundColor, 10%);
 @tempMid: desaturate(@backgroundColor, 10%);
 @tempDark: desaturate(@darkBackgroundColor, 10%);
-@interactableGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.1);
+@interactableGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.2);
 @interactableGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0);
-@interactableGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.1);
+@interactableGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.2);
 @interactableGradientStops: @interactableGradientStop1 0%,@interactableGradientStop2 40%,@interactableGradientStop3 100%;
-@interactableHoverGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.25);
-@interactableHoverGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.25);
-@interactableHoverGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.5);
+@interactableHoverGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.5);
+@interactableHoverGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.5);
+@interactableHoverGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 1);
 @interactableHoverGradientStops: @interactableHoverGradientStop1 0%,@interactableHoverGradientStop2 40%,@interactableHoverGradientStop3 100%;
-@interactableActiveGradientStop1: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.5);
-@interactableActiveGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.25);
-@interactableActiveGradientStop3: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.5);
+@interactableActiveGradientStop1: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 1);
+@interactableActiveGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.5);
+@interactableActiveGradientStop3: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 1);
 @interactableActiveGradientStops: @interactableActiveGradientStop1 0%,@interactableActiveGradientStop2 40%,@interactableActiveGradientStop3 100%;
-
-@tempLight: desaturate(@lightAccentColor, 35%);
-@tempMid: desaturate(@accentColor, 55%);
-@tempDark: desaturate(@darkAccentColor, 35%);
-@interactingGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.5);
-@interactingGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.5);
-@interactingGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.5);
-@interactingGradientStops: @interactingGradientStop1 0%, @interactingGradientStop2 40%, @interactingGradientStop3 100%;
-@tempLight: desaturate(@lightAccentColor, 25%);
-@tempMid: desaturate(@accentColor, 25%);
-@tempDark: desaturate(@darkAccentColor, 25%);
-@interactingHoverGradientStop1: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.5);
-@interactingHoverGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.5);
-@interactingHoverGradientStop3: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.5);
-@interactingHoverGradientStops: @interactingHoverGradientStop1 0%, @interactingHoverGradientStop2 40%, @interactingHoverGradientStop3 100%;
-@interactingActiveGradientStop1: rgba(red(@tempDark), green(@tempDark), blue(@tempDark), 0.5);
-@interactingActiveGradientStop2: rgba(red(@tempMid), green(@tempMid), blue(@tempMid), 0.5);
-@interactingActiveGradientStop3: rgba(red(@tempLight), green(@tempLight), blue(@tempLight), 0.5);
-@interactingActiveGradientStops: @interactingActiveGradientStop1 0%, @interactingActiveGradientStop2 40%, @interactingActiveGradientStop3 100%;
 
 @selectedGradientStop1: desaturate(@lightAccentColor, 10%);
 @selectedGradientStop2: desaturate(@accentColor, 30%);
@@ -131,10 +112,6 @@ Gradients:
 @interactableGradient: linear-gradient(to bottom, @interactableGradientStops);
 @interactableHoverGradient: linear-gradient(to bottom, @interactableHoverGradientStops);
 @interactableActiveGradient: linear-gradient(to bottom, @interactableActiveGradientStops);
-
-@interactingGradient: linear-gradient(to bottom, @interactingGradientStops);
-@interactingHoverGradient: linear-gradient(to bottom, @interactingHoverGradientStops);
-@interactingActiveGradient: linear-gradient(to bottom, @interactingActiveGradientStops);
 
 @selectedButtonGradient: linear-gradient(to bottom, @selectedGradientStops);
 @selectedButtonHoverGradient: linear-gradient(to bottom, @selectedHoverGradientStops);
