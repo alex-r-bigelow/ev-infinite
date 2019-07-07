@@ -17,13 +17,13 @@ class MiniMapView extends View {
       .attr('width', this._size)
       .attr('height', this._size);
 
-    this.drawCurrentSystem();
-
     this.quickDrawReady = true;
     this.quickDraw();
   }
   quickDraw () {
     if (this.quickDrawReady) {
+      this.drawCurrentSystem();
+      this.drawPlayerShip();
       this.drawShips();
     }
   }
@@ -31,15 +31,20 @@ class MiniMapView extends View {
     const bodies = window.controller.currentSystem.bodies;
 
     // The minimap is always square; use the system's widest dimension to scale,
-    // and center the other dimension
-    let min = 0;
-    let max = 0;
+    // and center the other dimension (include the player's coordinates in case
+    // they're flying far out of the system)
+    const playerCoords = [
+      window.controller.playerShip.currentShip.x,
+      window.controller.playerShip.currentShip.y
+    ];
+    let min = Math.min(...playerCoords);
+    let max = Math.max(...playerCoords);
     for (const b of bodies) {
       min = Math.min(min, b.coordinates.x, b.coordinates.y);
       max = Math.max(max, b.coordinates.x, b.coordinates.y);
     }
     const margin = this.emSize;
-    const scale = d3.scaleLinear()
+    this.scale = d3.scaleLinear()
       .domain([min, max])
       .range([margin, this._size - margin]);
 
@@ -50,13 +55,21 @@ class MiniMapView extends View {
     const bodyDotsEnter = bodyDots.enter().append('g').classed('bodyDot', true);
     bodyDots = bodyDots.merge(bodyDotsEnter);
 
-    bodyDots.attr('transform', d => `translate(${scale(d.coordinates.x)},${scale(d.coordinates.y)})`);
+    bodyDots.attr('transform', d => `translate(${this.scale(d.coordinates.x)},${this.scale(d.coordinates.y)})`);
     bodyDots.classed('star', d => d.type === 'Star')
       .classed('planet', d => d.type === 'Planet')
       .classed('spaceStation', d => d.type === 'SpaceStation');
 
     bodyDotsEnter.append('circle')
       .attr('r', 4);
+  }
+  drawPlayerShip () {
+    const ship = window.controller.playerShip.currentShip;
+    const x = this.scale(ship.x);
+    const y = this.scale(ship.y);
+    const angle = 180 * ship.direction / Math.PI;
+    this.d3el.select('.playerShip')
+      .attr('transform', `translate(${x},${y}) rotate(${angle})`);
   }
   drawShips () {
     // TODO

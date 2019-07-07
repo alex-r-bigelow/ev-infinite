@@ -62,7 +62,7 @@ class Controller {
       this.modal.render();
     }
   }
-  update () {
+  tick () {
     // Don't update any game state while paused
     if (this.paused) {
       return;
@@ -75,8 +75,14 @@ class Controller {
     if (this.pressedKeys[keyBindings['turnRight']]) {
       this.playerShip.currentShip.turnRight();
     }
+    if (this.pressedKeys[keyBindings['accelerate']]) {
+      this.playerShip.currentShip.accelerate();
+    }
 
     // TODO: AI actions...
+
+    // Physics updates
+    this.playerShip.currentShip.tick();
   }
   startGameLoop () {
     const timestamp = () => {
@@ -93,7 +99,7 @@ class Controller {
       dt = dt + Math.min(1, (now - last) / 1000);
       while (dt > step) {
         dt = dt - step;
-        this.update(step);
+        this.tick(step);
       }
       this.renderAllViews(true);
       last = now;
