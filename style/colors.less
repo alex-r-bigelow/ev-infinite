@@ -42,16 +42,14 @@ Color meanings:
 
 @shadowColor: @OffBlack;
 
-@errorColor: @DarkPink;
-
-@backgroundColor: @DarkPurple;
-@lightBackgroundColor: @LightPurple;
-@darkBackgroundColor: darken(@backgroundColor, 30%);
-@darkestBackgroundColor: darken(@backgroundColor, 45%);
+@backgroundColor: @DarkGrey;
+@lightBackgroundColor: @LightGrey;
+@darkBackgroundColor: darken(@backgroundColor, 20%);
+@darkestBackgroundColor: darken(@backgroundColor, 40%);
 @backgroundImageFilter: replace(@backgroundColor, '#(.*)', 'url(#recolorImageTo$1)');
 
-@accentColor: @DarkYellow;
-@lightAccentColor: @LightYellow;
+@accentColor: @DarkTeal;
+@lightAccentColor: @LightTeal;
 @darkAccentColor: darken(@accentColor, 30%);
 @accentImageFilter: replace(@backgroundColor, '#(.*)', 'url(#recolorImageTo$1)');
 
