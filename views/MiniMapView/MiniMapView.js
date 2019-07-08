@@ -62,6 +62,26 @@ class MiniMapView extends View {
 
     bodyDotsEnter.append('circle')
       .attr('r', 4);
+
+    // Draw the orbits
+    const orbitList = bodies.map(d => {
+      let { x, y } = d.orbitCenter;
+      x = this.scale(x);
+      y = this.scale(y);
+      const r = Math.sqrt((x - this.scale(d.coordinates.x)) ** 2 +
+                          (y - this.scale(d.coordinates.y)) ** 2);
+      return { x, y, r };
+    });
+    let orbits = this.d3el.select('.orbits')
+      .selectAll('.orbit').data(orbitList);
+    orbits.exit().remove();
+    const orbitsEnter = orbits.enter().append('circle').classed('orbit', true);
+    orbits = orbits.merge(orbitsEnter);
+
+    orbits
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('r', d => d.r);
   }
   drawPlayerShip () {
     const ship = window.controller.playerShip.currentShip;

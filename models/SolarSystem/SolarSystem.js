@@ -44,7 +44,8 @@ class SolarSystem extends Model {
         x: origin.x + distance * Math.cos(angle),
         y: origin.y + distance * Math.sin(angle)
       };
-      let separation = jStat.normal.inv(numberGenerator(), 3 - layer, 0.2);
+      const separationFactor = (3 - layer) ** 2;
+      let separation = jStat.normal.inv(numberGenerator(), separationFactor, 0.2 * separationFactor);
       if (numberGenerator() < 0.05) {
         // 5% chance of binary systems or subsystems
         bodies.push(initBody(layer));
@@ -63,8 +64,10 @@ class SolarSystem extends Model {
         bodies[0].coordinates = center;
       }
 
-      if (layer < 2) {
-        const numSatellites = Math.round(jStat.normal.inv(numberGenerator(), 2, 3));
+      // Generate things orbiting this body / binary (as long as they're not
+      // space stations)
+      if (layer < 2 && !bodies.every(d => d.type === 'SpaceStation')) {
+        const numSatellites = Math.round(jStat.normal.inv(numberGenerator(), 1.5, 2));
         for (let i = 0; i < numSatellites; i++) {
           const satellites = createSystem(center, layer + 1, separation, numberGenerator() * 2 * Math.PI);
           for (const body of bodies) {

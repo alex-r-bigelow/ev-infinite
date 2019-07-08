@@ -22,16 +22,21 @@ class Cell {
     const locations = {};
     let i = 0;
     while (i < numSolarSystems) {
-      // Ensure some basic separation of the solarSystems
+      // Ensure some basic separation of the solarSystems by assigning them
+      // to a 1/5 x 1/5 subsection of the cell
       let newSolarSystem = new SolarSystem({
         id: this.cellId + '_' + i,
-        x: this.coordinates.x + Math.round(20 * numberGenerator()) / 20,
-        y: this.coordinates.y + Math.round(20 * numberGenerator()) / 20
+        x: this.coordinates.x + Math.round(5 * numberGenerator()) / 5,
+        y: this.coordinates.y + Math.round(5 * numberGenerator()) / 5
       });
+      // Prevent solarSystems from being in the same subsection
       const key = newSolarSystem.coordinates.x + '_' + newSolarSystem.coordinates.y;
       if (!locations[key]) {
-        // Prevent solarSystems from being in the same place... even though the odds are small,
-        // the galaxy is huge... so it's going to happen at some point, by definition
+        locations[key] = newSolarSystem;
+        // Perturb the coordinates a little within their subsections to avoid
+        // a rectilinear look
+        newSolarSystem.coordinates.x += numberGenerator() / 8;
+        newSolarSystem.coordinates.y += numberGenerator() / 8;
         this.solarSystems.push(newSolarSystem);
         i++;
       }
@@ -107,6 +112,6 @@ class Cell {
 Cell.VORONOI = d3.voronoi().x(d => d.coordinates.x).y(d => d.coordinates.y);
 Cell.PERCENTAGE_OF_LINKS_TO_KEEP = 0.25;
 Cell.MIN_NODES = 5;
-Cell.MAX_NODES = 15;
+Cell.MAX_NODES = 10;
 
 export default Cell;

@@ -24,5 +24,5 @@ void main() {
   }
 
   gl_Position = projectionMatrix * modelViewMatrix * mvPosition;
-  gl_PointSize = 3.0;
+  gl_PointSize = 2.0;
 }
