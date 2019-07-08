@@ -63,8 +63,6 @@ class ViewportView extends View {
       -ViewportView.SYSTEM_SCALE_FACTOR * ship.x % ViewportView.DUST_WINDOW,
       ViewportView.SYSTEM_SCALE_FACTOR * ship.y % ViewportView.DUST_WINDOW
     );
-    this.dustMaterial.uniforms.offset.needsUpdate = true;
-    this.dustField.geometry.attributes.position.needsUpdate = true;
   }
   draw () {
     this._bounds = this.d3el.node().getBoundingClientRect();
