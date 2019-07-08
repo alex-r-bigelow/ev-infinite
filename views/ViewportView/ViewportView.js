@@ -29,7 +29,7 @@ class ViewportView extends View {
     this.dustFieldScene = new THREE.Scene();
     this.dustFieldCamera = new THREE.PerspectiveCamera(
       75, this._bounds.width / this._bounds.height, 0.1, 1000);
-    this.dustFieldCamera.position.z = ViewportView.DUST_WINDOW / 4;
+    this.dustFieldCamera.position.z = ViewportView.DUST_DEPTH;
     this.dustFieldRenderer = new THREE.WebGLRenderer({
       canvas: this.d3el.select('.dustField').node()
     });
@@ -38,29 +38,32 @@ class ViewportView extends View {
     const geometry = new THREE.BufferGeometry();
     geometry.addAttribute('position', new THREE.BufferAttribute(
       new Float32Array(ViewportView.NUM_PARTICLES * 3), 3));
-    // The funky syntax below evaluates our external shader code as a Javascript
-    // template string (so that we can use variables like
-    // ViewportView.DUST_WINDOW)
-    const material = new THREE.ShaderMaterial({
-      vertexShader: eval('`' + this.resources[2] + '`'), // eslint-disable-line no-eval
-      fragmentShader: eval('`' + this.resources[3] + '`'), // eslint-disable-line no-eval
+    this.dustMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        dustWindow: { value: ViewportView.DUST_WINDOW },
+        offset: { value: new THREE.Vector2(0, 0) }
+      },
+      vertexShader: this.resources[2],
+      fragmentShader: this.resources[3],
       transparent: true
     });
-    this.dustField = new THREE.Points(geometry, material);
+    this.dustField = new THREE.Points(geometry, this.dustMaterial);
     this.dustFieldScene.add(this.dustField);
 
     const pointList = this.dustField.geometry.attributes.position.array;
     for (let i = 0; i < ViewportView.NUM_PARTICLES; i++) {
-      pointList[i * 3] = THREE.Math.randFloat(-ViewportView.DUST_WINDOW, ViewportView.DUST_WINDOW);
-      pointList[i * 3 + 1] = THREE.Math.randFloat(-ViewportView.DUST_WINDOW, ViewportView.DUST_WINDOW);
-      pointList[i * 3 + 2] = THREE.Math.randFloat(0, -ViewportView.DUST_WINDOW / 4);
+      pointList[i * 3] = THREE.Math.randFloat(-ViewportView.DUST_WINDOW / 2, ViewportView.DUST_WINDOW / 2);
+      pointList[i * 3 + 1] = THREE.Math.randFloat(-ViewportView.DUST_WINDOW / 2, ViewportView.DUST_WINDOW / 2);
+      pointList[i * 3 + 2] = THREE.Math.randFloat(0, -ViewportView.DUST_DEPTH);
     }
   }
   updateDustField () {
     const ship = window.controller.playerShip.currentShip;
-    this.dustFieldCamera.position.x = ViewportView.SYSTEM_SCALE_FACTOR * ship.x;
-    this.dustFieldCamera.position.y = -ViewportView.SYSTEM_SCALE_FACTOR * ship.y;
-
+    this.dustMaterial.uniforms.offset.value = new THREE.Vector2(
+      -ViewportView.SYSTEM_SCALE_FACTOR * ship.x % ViewportView.DUST_WINDOW,
+      ViewportView.SYSTEM_SCALE_FACTOR * ship.y % ViewportView.DUST_WINDOW
+    );
+    this.dustMaterial.uniforms.offset.needsUpdate = true;
     this.dustField.geometry.attributes.position.needsUpdate = true;
   }
   draw () {
@@ -95,5 +98,6 @@ class ViewportView extends View {
 }
 ViewportView.SYSTEM_SCALE_FACTOR = 100;
 ViewportView.NUM_PARTICLES = 5000;
-ViewportView.DUST_WINDOW = 400;
+ViewportView.DUST_WINDOW = 800;
+ViewportView.DUST_DEPTH = 100;
 export default ViewportView;
