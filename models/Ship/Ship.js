@@ -21,7 +21,7 @@ class Ship extends IntrospectableMixin(Model) {
   getSvg () {
     // Dummy placeholder that just draws a triangle; do something sexier in the future
     const backRadius = this.radius * Math.sqrt(2) / 2;
-    return `<path fill="#D95F02" d="M${this.radius},0L${-backRadius},${backRadius}L${-backRadius},${-backRadius}Z"></path>`;
+    return `<path fill="#E6AB02" d="M${this.radius},0L${-backRadius},${backRadius}L${-backRadius},${-backRadius}Z"></path>`;
   }
   tick () {
     this.x += Ship.SYSTEM_SCALE_FACTOR * this.velocityX;

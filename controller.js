@@ -1,5 +1,8 @@
 /* globals d3 */
 import keyBindings from './config/keyBindings.js';
+import language from './data/language.js';
+
+import { constructChain } from './utils/nameGenerator.js';
 
 import PlayerShip from './models/PlayerShip/PlayerShip.js';
 import Galaxy from './models/Universe/Galaxy.js';
@@ -22,6 +25,11 @@ class Controller {
       MiniMapView: new MiniMapView()
     };
     this.setupEventListeners();
+
+    // TODO: generate different dialects in different regions of space
+    this.dialect = constructChain(language.names
+      .filter(d => d.country === 'Japan')
+      .map(d => d.name));
   }
   setupEventListeners () {
     this.pressedKeys = {};

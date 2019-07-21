@@ -1,9 +1,17 @@
+@import '../../style/colors.less';
+
 .MapView {
-  .system circle {
-    fill: white;
+  .system {
+    circle {
+      fill: @OffWhite;
+    }
+    text {
+      fill: @OffWhite;
+      font-size: 9px;
+    }
   }
   .link line {
     stroke-width: 1px;
-    stroke: white;
+    stroke: @LightestGrey;
   }
 }

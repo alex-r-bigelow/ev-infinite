@@ -1,9 +1,11 @@
+import { markovName } from '../../../utils/nameGenerator.js';
 import IntrospectableMixin from '../../../utils/IntrospectableMixin.js';
 
 class Body extends IntrospectableMixin(class {}) {
-  constructor (layer) {
+  constructor (layer, seed) {
     super();
     this.layer = layer;
+    this.seed = seed;
     this.orbiting = [];
     this.satellites = [];
   }
@@ -19,6 +21,18 @@ class Body extends IntrospectableMixin(class {}) {
       y = y / this.orbiting.length;
     }
     return { x, y };
+  }
+  get details () {
+    if (!this._detailsCache) {
+      this._detailsCache = this.computeDetails();
+    }
+    return this._detailsCache;
+  }
+  computeDetails () {
+    const numberGenerator = new Math.seedrandom(this.seed); // eslint-disable-line new-cap
+    return {
+      name: markovName(window.controller.dialect, numberGenerator)
+    };
   }
 }
 export default Body;

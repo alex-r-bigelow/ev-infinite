@@ -1,5 +1,6 @@
 /* globals  jStat */
 import { Model } from '../../node_modules/uki/dist/uki.esm.js';
+import { markovName } from '../../../utils/nameGenerator.js';
 import Star from './bodies/Star.js';
 import Planet from './bodies/Planet.js';
 import SpaceStation from './bodies/SpaceStation.js';
@@ -11,6 +12,15 @@ class SolarSystem extends Model {
     this.id = id;
     this.coordinates = { x, y };
   }
+  get details () {
+    if (!this._detailsCache) {
+      const numberGenerator = new Math.seedrandom(this.coordinates); // eslint-disable-line new-cap
+      this._detailsCache = {
+        name: markovName(window.controller.dialect, numberGenerator)
+      };
+    }
+    return this._detailsCache;
+  }
   get bodies () {
     if (this._bodyCache) {
       return this._bodyCache;
@@ -21,18 +31,19 @@ class SolarSystem extends Model {
 
     const initBody = layer => {
       const r = numberGenerator();
+      const seed = numberGenerator();
       let result;
       if (layer === 0) {
         // Center odds: 0.5% SpaceStation, 4.5% Planet, 95% Star
-        result = r < 0.005 ? new SpaceStation(layer)
-          : r < 0.05 ? new Planet(layer) : new Star(layer);
+        result = r < 0.005 ? new SpaceStation(layer, seed)
+          : r < 0.05 ? new Planet(layer, seed) : new Star(layer, seed);
       } else if (layer === 1) {
         // Layer 1 odds: 1% SpaceStation, 97% Planet, 2% Star
-        result = r < 0.01 ? new SpaceStation(layer)
-          : r < 0.98 ? new Planet(layer) : new Star(layer);
+        result = r < 0.01 ? new SpaceStation(layer, seed)
+          : r < 0.98 ? new Planet(layer, seed) : new Star(layer, seed);
       } else if (layer === 2) {
         // Layer 2 odds: 4% SpaceStation, 96% Planet, 0% Star
-        result = r < 0.04 ? new SpaceStation(layer) : new Planet(layer);
+        result = r < 0.04 ? new SpaceStation(layer, seed) : new Planet(layer, seed);
       }
       this._bodyCache.push(result);
       return result;

@@ -63,6 +63,12 @@ class MiniMapView extends View {
     bodyDotsEnter.append('circle')
       .attr('r', 4);
 
+    bodyDotsEnter.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', 15);
+    bodyDots.select('text')
+      .text(d => d.details.name);
+
     // Draw the orbits
     const orbitList = bodies.map(d => {
       let { x, y } = d.orbitCenter;

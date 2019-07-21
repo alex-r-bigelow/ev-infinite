@@ -14,24 +14,46 @@ class ViewportView extends View {
   setup () {
     this.d3el.html(this.resources[1]);
 
+    this._bounds = this.d3el.node().getBoundingClientRect();
+
+    this.setupBodiesLayer();
+    this.updateCurrentBodies();
     this.setupDustField();
     this.setupPlayerShip();
   }
   tick () {
     if (this.quickDrawReady) {
+      this.updateBodyCamera();
       this.updateDustField();
     }
   }
+  setupBodiesLayer () {
+    // Set up the scene, camera, and renderer
+    this.bodyScene = new THREE.Scene();
+    this.bodyCamera = new THREE.PerspectiveCamera(
+      75, this._bounds.width / this._bounds.height, 0.1, 1000);
+    // this.bodyCamera.position.z = ViewportView.DUST_DEPTH;
+    this.bodyRenderer = new THREE.WebGLRenderer({
+      canvas: this.d3el.select('.bodies').node(),
+      alpha: true
+    });
+  }
+  updateCurrentBodies () {
+    const bodies = window.controller.currentSystem.bodies;
+    for (const body of bodies) {
+      // TODO: generate textures, rings, size (and geometry for space stations?)
+      // based on body.details
+    }
+  }
   setupDustField () {
-    this._bounds = this.d3el.node().getBoundingClientRect();
-
     // Set up the scene, camera, and renderer
     this.dustFieldScene = new THREE.Scene();
     this.dustFieldCamera = new THREE.PerspectiveCamera(
       75, this._bounds.width / this._bounds.height, 0.1, 1000);
     this.dustFieldCamera.position.z = ViewportView.DUST_DEPTH;
     this.dustFieldRenderer = new THREE.WebGLRenderer({
-      canvas: this.d3el.select('.dustField').node()
+      canvas: this.d3el.select('.dustField').node(),
+      alpha: true
     });
 
     // Dust field
@@ -57,6 +79,11 @@ class ViewportView extends View {
       pointList[i * 3 + 2] = THREE.Math.randFloat(0, -ViewportView.DUST_DEPTH);
     }
   }
+  updateBodyCamera () {
+    const ship = window.controller.playerShip.currentShip;
+    this.bodyCamera.position.x = ship.x;
+    this.bodyCamera.position.y = ship.y;
+  }
   updateDustField () {
     const ship = window.controller.playerShip.currentShip;
     this.dustMaterial.uniforms.offset.value = new THREE.Vector2(
@@ -69,6 +96,10 @@ class ViewportView extends View {
     this.d3el.selectAll('svg')
       .attr('width', this._bounds.width)
       .attr('height', this._bounds.height);
+
+    this.bodyRenderer.setSize(this._bounds.width, this._bounds.height);
+    this.bodyCamera.aspect = this._bounds.width / this._bounds.height;
+    this.bodyCamera.updateProjectionMatrix();
 
     this.dustFieldRenderer.setSize(this._bounds.width, this._bounds.height);
     this.dustFieldCamera.aspect = this._bounds.width / this._bounds.height;

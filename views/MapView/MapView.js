@@ -55,6 +55,12 @@ class MapView extends Modal {
 
     systemsEnter.append('circle').attr('r', 4);
 
+    systemsEnter.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', 15);
+    systems.select('text')
+      .text(d => d.details.name);
+
     systems.attr('transform', d => {
       const x = xScale(d.coordinates.x);
       const y = yScale(d.coordinates.y);
