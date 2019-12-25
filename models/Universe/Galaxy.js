@@ -14,6 +14,12 @@ class Galaxy extends Model {
   }
 
   getGraph (cellViewport) {
+    const viewportHash = ['left', 'top', 'right', 'bottom'].reduce((agg, side) => {
+      return agg + cellViewport[side];
+    }, '');
+    if (this._graphCache && this._cacheHash === viewportHash) {
+      return this._graphCache;
+    }
     // Throw away cells that are now out of the viewport
     for (const key of Object.keys(this.currentCells)) {
       const cell = this.currentCells[key];
@@ -52,6 +58,8 @@ class Galaxy extends Model {
       }
     }
 
+    this._graphCache = graph;
+    this._cacheHash = viewportHash;
     return graph;
   }
 
