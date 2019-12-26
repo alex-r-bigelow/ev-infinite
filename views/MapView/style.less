@@ -9,9 +9,24 @@
       fill: @textColor;
       font-size: 9px;
     }
+    &.debug circle {
+      fill: @DarkGreen;
+    }
+    &.targeted circle {
+      fill: @accentColor;
+    }
+    &.current circle {
+      fill: @darkAccentColor;
+    }
   }
-  .link line {
-    stroke-width: 1px;
-    stroke: @darkBackgroundColor;
+  .link {
+    line {
+      stroke-width: 1px;
+      stroke: @darkBackgroundColor;
+    }
+    &.targeted line {
+      stroke-width: 3px;
+      stroke: @accentColor;
+    }
   }
 }

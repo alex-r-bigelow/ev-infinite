@@ -18,6 +18,8 @@ class Controller {
 
     this.universe = new Galaxy(15);
     this.currentSystem = this.universe.getASolarSystem();
+    this.targetSystem = null;
+    this.targetPath = [];
     this.playerShip = new PlayerShip();
 
     this.views = {
@@ -135,6 +137,15 @@ class Controller {
     this.paused = false;
     delete this.modal;
     d3.select('.modal').style('display', 'none');
+  }
+  setTargetSystem (system) {
+    if (system === null) {
+      this.targetPath = [];
+    } else {
+      this.targetPath = this.universe.getPathBetweenSystems(this.currentSystem, system);
+    }
+    this.targetSystem = this.targetPath.length === 0 ? null : system;
+    this.renderAllViews(false);
   }
 }
 

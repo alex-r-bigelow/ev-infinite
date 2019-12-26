@@ -41,11 +41,6 @@ class MapView extends Modal {
       .domain([-1, 1])
       .range([height / 2 - 200, height / 2 + 200]);
 
-    // TODO: draw pre-rendered galactic textures, etc; don't bother rendering
-    // individual systems beyond this.currentTransform.k < 0.1 or so
-    this.drawSystems();
-  }
-  drawSystems () {
     // For now, just use the full radius of the universe (we're keeping
     // it small-ish enough to fit in memory / draw completely)
     const r = window.controller.universe.radius;
@@ -56,6 +51,12 @@ class MapView extends Modal {
       bottom: r
     });
 
+    this.drawSystems(graph);
+    this.drawLinks(graph);
+    // TODO: draw pre-rendered galactic textures, etc; don't bother rendering
+    // individual systems beyond this.currentTransform.k < 0.1 or so
+  }
+  drawSystems (graph) {
     let systems = this.d3el.select('.systems').selectAll('.system')
       .data(graph.nodes, d => d.id);
     systems.exit().remove();
@@ -77,6 +78,20 @@ class MapView extends Modal {
       return `translate(${x},${y})`;
     });
 
+    systems.classed('targeted', d => {
+      return window.controller.targetSystem !== null && d.id === window.controller.targetSystem.id;
+    }).classed('current', d => d.id === window.controller.currentSystem.id);
+
+    systemsEnter.on('click', d => {
+      window.controller.setTargetSystem(d);
+    });
+  }
+  drawLinks (graph) {
+    const targetedLinkLookup = {};
+    for (const { source, target } of window.controller.targetPath) {
+      targetedLinkLookup[source.id + '_' + target.id] = true;
+    }
+
     let links = this.d3el.select('.links').selectAll('.link')
       .data(graph.links, d => d.source.id + '_' + d.target.id);
     links.exit().remove();
@@ -90,6 +105,11 @@ class MapView extends Modal {
       .attr('y1', d => this.yScale(d.source.coordinates.y))
       .attr('x2', d => this.xScale(d.target.coordinates.x))
       .attr('y2', d => this.yScale(d.target.coordinates.y));
+
+    links.classed('targeted', d => {
+      return targetedLinkLookup[d.source.id + '_' + d.target.id] ||
+        targetedLinkLookup[d.target.id + '_' + d.source.id];
+    });
   }
 }
 export default MapView;

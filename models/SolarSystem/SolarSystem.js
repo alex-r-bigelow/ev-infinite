@@ -11,6 +11,7 @@ class SolarSystem extends Model {
 
     this.id = id;
     this.coordinates = { x, y };
+    this.loadedNeighbors = {};
   }
   get details () {
     if (!this._detailsCache) {
@@ -96,6 +97,11 @@ class SolarSystem extends Model {
     createSystem({ x: 0, y: 0 }, 0, 0, 0);
 
     return this._bodyCache;
+  }
+  loadNeighbor (neighborSystem) {
+    if (!this.loadedNeighbors[neighborSystem.id]) {
+      this.loadedNeighbors[neighborSystem.id] = neighborSystem;
+    }
   }
 }
 export default SolarSystem;

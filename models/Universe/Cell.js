@@ -54,6 +54,12 @@ class Cell {
       (link.target.coordinates.y - link.source.coordinates.y) ** 2);
     return numberGenerator() <= 1 - length;
   }
+  connectNeighbors (linkList) {
+    for (const link of linkList) {
+      link.source.loadNeighbor(link.target);
+      link.target.loadNeighbor(link.source);
+    }
+  }
   generateInternalLinks () {
     if (this.links) {
       return this.links;
@@ -61,6 +67,7 @@ class Cell {
     const numberGenerator = new Math.seedrandom(this.internalLinkSeed); // eslint-disable-line new-cap
     this.links = Cell.VORONOI(this.solarSystems).links()
       .filter(d => this.discourageLongLinks(d, numberGenerator));
+    this.connectNeighbors(this.links);
     return this.links;
   }
   generateRightLinks (rightCell) {
@@ -82,6 +89,7 @@ class Cell {
           return false;
         }
       });
+    this.connectNeighbors(this.rightLinks);
     return this.rightLinks;
   }
   generateBottomLinks (bottomCell) {
@@ -103,6 +111,7 @@ class Cell {
           return false;
         }
       });
+    this.connectNeighbors(this.bottomLinks);
     return this.bottomLinks;
   }
 }

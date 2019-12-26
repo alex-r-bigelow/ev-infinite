@@ -14,12 +14,6 @@ class Galaxy extends Model {
   }
 
   getGraph (cellViewport) {
-    const viewportHash = ['left', 'top', 'right', 'bottom'].reduce((agg, side) => {
-      return agg + cellViewport[side];
-    }, '');
-    if (this._graphCache && this._cacheHash === viewportHash) {
-      return this._graphCache;
-    }
     // Throw away cells that are now out of the viewport
     for (const key of Object.keys(this.currentCells)) {
       const cell = this.currentCells[key];
@@ -57,12 +51,8 @@ class Galaxy extends Model {
         }
       }
     }
-
-    this._graphCache = graph;
-    this._cacheHash = viewportHash;
     return graph;
   }
-
   getASolarSystem (roughDistance = 0, roughAngle = Math.random() * 2 * Math.PI) {
     // get the first node in the cell that closest fits these parameters
 
@@ -79,6 +69,138 @@ class Galaxy extends Model {
         roughDistance *= 0.9;
       }
     }
+  }
+  getPathBetweenSystems (a, b) {
+    if (a.id === b.id) {
+      return [];
+    }
+
+    const cellsOnTheWay = {};
+
+    // Cell coordinates
+    const aC = {
+      x: Math.floor(a.coordinates.x),
+      y: Math.floor(a.coordinates.y)
+    };
+    const bC = {
+      x: Math.floor(b.coordinates.x),
+      y: Math.floor(b.coordinates.y)
+    };
+
+    // Shortcut for flagging a kernel of cells along the straight line
+    const k = 1; // k = 2 means a kernel thats 5x5
+    const addCells = (x, y) => {
+      for (let xk = x - k; xk <= x + k; xk++) {
+        for (let yk = y - k; yk <= y + k; yk++) {
+          const key = xk + '_' + yk;
+          if (!cellsOnTheWay[key]) {
+            cellsOnTheWay[key] = new Cell({ x: xk, y: yk }, this.radius);
+          }
+        }
+      }
+    };
+
+    // Use Bresenham algorithm for cells in a straight line from a to b
+    const dx = Math.abs(aC.x - bC.x);
+    const dy = Math.abs(aC.y - bC.y);
+    const sx = (aC.x < bC.x) ? 1 : -1;
+    const sy = (aC.y < bC.y) ? 1 : -1;
+    let err = dx - dy;
+
+    let x = aC.x;
+    let y = aC.y;
+
+    while (true) {
+      addCells(x, y);
+
+      if (x === bC.x && y === bC.y) {
+        break;
+      }
+      const e2 = 2 * err;
+      if (e2 > -dy) {
+        err -= dy;
+        x += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        y += sy;
+      }
+    }
+
+    // Connect all the cells to each other
+    for (const cell of Object.values(cellsOnTheWay)) {
+      const x = cell.coordinates.x;
+      const y = cell.coordinates.y;
+      const key = x + '_' + y;
+      cellsOnTheWay[key].generateInternalLinks();
+      const leftCell = cellsOnTheWay[(x - 1) + '_' + y];
+      if (leftCell) {
+        leftCell.generateRightLinks(cellsOnTheWay[key]);
+      }
+      const topCell = cellsOnTheWay[x + '_' + (y - 1)];
+      if (topCell) {
+        topCell.generateBottomLinks(cellsOnTheWay[key]);
+      }
+    }
+
+    // Set up Dijkstra's algorithm, and find the duplicate of a in this new
+    // network
+    const unvisited = {};
+    const distances = {};
+    const previousNodes = {};
+    let currentNode;
+    for (const cell of Object.values(cellsOnTheWay)) {
+      for (const system of cell.solarSystems) {
+        if (system.id === a.id) {
+          currentNode = system;
+          distances[system.id] = 0;
+          continue;
+        }
+        unvisited[system.id] = system;
+        distances[system.id] = Infinity;
+      }
+    }
+
+    // Run Dijkstra's algorithm
+    const visit = (node) => {
+      const distance = distances[node.id] + 1;
+      for (const neighborId of Object.keys(node.loadedNeighbors)) {
+        if (unvisited[neighborId] && (distances[neighborId] === undefined || distance < distances[neighborId])) {
+          distances[neighborId] = distance;
+          previousNodes[neighborId] = node;
+        }
+      }
+      delete unvisited[node.id];
+    };
+    while (true) {
+      visit(currentNode);
+      const closestId = Object.keys(unvisited).sort((aId, bId) => {
+        return distances[aId] - distances[bId];
+      })[0];
+      if (!closestId || !isFinite(distances[closestId])) {
+        // No path exists on a straight-ish line, so return early with our best
+        // partial guess
+        break;
+      } else {
+        currentNode = unvisited[closestId];
+      }
+      if (currentNode.id === b.id) {
+        break;
+      }
+    }
+
+    // Trace back from currentNode, but purge any links so it's lighter weight
+    const path = [];
+    currentNode.loadedNeighbors = {};
+    while (previousNodes[currentNode.id]) {
+      previousNodes[currentNode.id].loadedNeighbors = {};
+      path.unshift({
+        source: previousNodes[currentNode.id],
+        target: currentNode
+      });
+      currentNode = previousNodes[currentNode.id];
+    }
+    return path;
   }
 }
 export default Galaxy;
