@@ -3,5 +3,6 @@ export default {
   'turnRight': 'd',
   'accelerate': 'w',
   'pause': 'Escape',
-  'showMap': 'm'
+  'showMap': 'm',
+  'initiateJump': 'j'
 };

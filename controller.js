@@ -42,6 +42,9 @@ class Controller {
     window.onload = () => {
       this.startGameLoop();
     };
+    window.onblur = () => {
+      this.pressedKeys = {};
+    };
     window.onkeydown = event => {
       this.pressedKeys[event.key] = true;
 
@@ -87,6 +90,13 @@ class Controller {
     }
     if (this.pressedKeys[keyBindings['accelerate']]) {
       this.playerShip.currentShip.accelerate();
+    }
+    if (this.pressedKeys[keyBindings['initiateJump']]) {
+      if (this.targetPath.length > 0) {
+        const nextSystem = this.targetPath[0].target;
+        this.playerShip.currentShip.initiateJump(this.currentSystem, nextSystem);
+      }
+      delete this.pressedKeys[keyBindings['initiateJump']];
     }
 
     // TODO: AI actions...
@@ -146,6 +156,16 @@ class Controller {
     }
     this.targetSystem = this.targetPath.length === 0 ? null : system;
     this.renderAllViews(false);
+  }
+  switchToNextSystem () {
+    if (this.targetPath.length > 0) {
+      const nextSystem = this.targetPath.splice(0, 1)[0].target;
+      this.currentSystem = nextSystem;
+      if (this.targetPath.length === 0) {
+        this.targetSystem = null;
+      }
+      this.renderAllViews();
+    }
   }
 }
 

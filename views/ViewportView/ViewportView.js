@@ -37,29 +37,7 @@ class ViewportView extends View {
       alpha: true
     });
 
-    const bodies = window.controller.currentSystem.bodies;
-    for (const body of bodies) {
-      const geometry = new THREE.SphereBufferGeometry(body.radius, 32, 32);
-
-      // TODO: generate textures, rings, size (and geometry for space stations?)
-      // based on body.details
-
-      if (body.type === 'Star') {
-        const material = new THREE.MeshBasicMaterial({ color: 0xffff99 });
-        const bodySphere = new THREE.Mesh(geometry, material);
-        const light = new THREE.PointLight(0xffff99);
-        light.add(bodySphere);
-        light.position.x = body.coordinates.x;
-        light.position.y = -body.coordinates.y;
-        this.bodyScene.add(light);
-      } else {
-        const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
-        const bodySphere = new THREE.Mesh(geometry, material);
-        bodySphere.position.x = body.coordinates.x;
-        bodySphere.position.y = -body.coordinates.y;
-        this.bodyScene.add(bodySphere);
-      }
-    }
+    this.populateBodiesLayer();
   }
   setupDustField () {
     // Set up the scene, camera, and renderer
@@ -95,6 +73,36 @@ class ViewportView extends View {
       pointList[i * 3 + 2] = THREE.Math.randFloat(0, -ViewportView.DUST_DEPTH);
     }
   }
+  populateBodiesLayer () {
+    // Remove any old bodies
+    while (this.bodyScene.children.length > 0) {
+      this.bodyScene.remove(this.bodyScene.children[0]);
+    }
+    // Add the new ones
+    const bodies = window.controller.currentSystem.bodies;
+    for (const body of bodies) {
+      const geometry = new THREE.SphereBufferGeometry(body.radius, 32, 32);
+
+      // TODO: generate textures, rings, size (and geometry for space stations?)
+      // based on body.details
+
+      if (body.type === 'Star') {
+        const material = new THREE.MeshBasicMaterial({ color: 0xffff99 });
+        const bodySphere = new THREE.Mesh(geometry, material);
+        const light = new THREE.PointLight(0xffff99, body.radius, 0, 2);
+        light.add(bodySphere);
+        light.position.x = body.coordinates.x;
+        light.position.y = -body.coordinates.y;
+        this.bodyScene.add(light);
+      } else {
+        const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+        const bodySphere = new THREE.Mesh(geometry, material);
+        bodySphere.position.x = body.coordinates.x;
+        bodySphere.position.y = -body.coordinates.y;
+        this.bodyScene.add(bodySphere);
+      }
+    }
+  }
   updateBodyCamera () {
     const ship = window.controller.playerShip.currentShip;
     this.bodyCamera.position.x = ship.x;
@@ -116,6 +124,7 @@ class ViewportView extends View {
     this.bodyRenderer.setSize(this._bounds.width, this._bounds.height);
     this.bodyCamera.aspect = this._bounds.width / this._bounds.height;
     this.bodyCamera.updateProjectionMatrix();
+    this.populateBodiesLayer();
 
     this.dustFieldRenderer.setSize(this._bounds.width, this._bounds.height);
     this.dustFieldCamera.aspect = this._bounds.width / this._bounds.height;
