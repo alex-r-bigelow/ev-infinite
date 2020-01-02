@@ -2,6 +2,7 @@
 
 .MapView {
   .system {
+    cursor: pointer;
     circle {
       fill: @OffWhite;
     }
@@ -9,14 +10,11 @@
       fill: @textColor;
       font-size: 9px;
     }
-    &.debug circle {
-      fill: @DarkGreen;
-    }
     &.targeted circle {
       fill: @accentColor;
     }
     &.current circle {
-      fill: @darkAccentColor;
+      fill: @secondAccentColor;
     }
   }
   .link {

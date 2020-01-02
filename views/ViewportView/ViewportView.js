@@ -17,7 +17,6 @@ class ViewportView extends View {
     this._bounds = this.d3el.node().getBoundingClientRect();
 
     this.setupBodiesLayer();
-    this.updateCurrentBodies();
     this.setupDustField();
     this.setupPlayerShip();
   }
@@ -31,18 +30,35 @@ class ViewportView extends View {
     // Set up the scene, camera, and renderer
     this.bodyScene = new THREE.Scene();
     this.bodyCamera = new THREE.PerspectiveCamera(
-      75, this._bounds.width / this._bounds.height, 0.1, 1000);
-    // this.bodyCamera.position.z = ViewportView.DUST_DEPTH;
+      50, this._bounds.width / this._bounds.height, 0.1, 1000);
+    this.bodyCamera.position.z = 3;
     this.bodyRenderer = new THREE.WebGLRenderer({
       canvas: this.d3el.select('.bodies').node(),
       alpha: true
     });
-  }
-  updateCurrentBodies () {
+
     const bodies = window.controller.currentSystem.bodies;
     for (const body of bodies) {
+      const geometry = new THREE.SphereBufferGeometry(body.radius, 32, 32);
+
       // TODO: generate textures, rings, size (and geometry for space stations?)
       // based on body.details
+
+      if (body.type === 'Star') {
+        const material = new THREE.MeshBasicMaterial({ color: 0xffff99 });
+        const bodySphere = new THREE.Mesh(geometry, material);
+        const light = new THREE.PointLight(0xffff99);
+        light.add(bodySphere);
+        light.position.x = body.coordinates.x;
+        light.position.y = -body.coordinates.y;
+        this.bodyScene.add(light);
+      } else {
+        const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+        const bodySphere = new THREE.Mesh(geometry, material);
+        bodySphere.position.x = body.coordinates.x;
+        bodySphere.position.y = -body.coordinates.y;
+        this.bodyScene.add(bodySphere);
+      }
     }
   }
   setupDustField () {
@@ -82,7 +98,7 @@ class ViewportView extends View {
   updateBodyCamera () {
     const ship = window.controller.playerShip.currentShip;
     this.bodyCamera.position.x = ship.x;
-    this.bodyCamera.position.y = ship.y;
+    this.bodyCamera.position.y = -ship.y;
   }
   updateDustField () {
     const ship = window.controller.playerShip.currentShip;
@@ -111,6 +127,7 @@ class ViewportView extends View {
   quickDraw () {
     if (this.quickDrawReady) {
       this.drawPlayerShip();
+      this.bodyRenderer.render(this.bodyScene, this.bodyCamera);
       this.dustFieldRenderer.render(this.dustFieldScene, this.dustFieldCamera);
     }
   }
