@@ -43,6 +43,10 @@ class MiniMapView extends View {
       min = Math.min(min, b.coordinates.x, b.coordinates.y);
       max = Math.max(max, b.coordinates.x, b.coordinates.y);
     }
+    if (bodies.length <= 1) {
+      min = Math.min(min, -4);
+      max = Math.max(max, 4);
+    }
     const margin = this.emSize;
     this.scale = d3.scaleLinear()
       .domain([min, max])
