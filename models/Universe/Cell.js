@@ -2,13 +2,8 @@
 import SolarSystem from '../SolarSystem/SolarSystem.js';
 
 class Cell {
-  constructor (coordinates, radius) {
+  constructor (coordinates, starDensity) {
     this.coordinates = coordinates;
-
-    // We want the outer edge of the galaxy to taper off at the edges w.r.t. the
-    // square of the distance; this ensures that, once either coordinate reaches
-    // the radius, there will be no stars
-    const starDensity = 1 - (this.coordinates.x ** 2 + this.coordinates.y ** 2) / radius ** 2;
 
     const numberGenerator = new Math.seedrandom(this.coordinates); // eslint-disable-line new-cap
     this.cellId = numberGenerator.int32();

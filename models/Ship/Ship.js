@@ -17,7 +17,7 @@ class Ship extends IntrospectableMixin(Model) {
 
     this.turnRate = Math.PI / 32;
     this.forwardRate = 0.5;
-    this.maxVelocity = 20;
+    this.maxVelocity = 40;
 
     this.x = 0;
     this.y = 0;

@@ -2,14 +2,14 @@ import { Model } from '../../node_modules/uki/dist/uki.esm.js';
 import Cell from './Cell.js';
 
 class Galaxy extends Model {
-  constructor (radius) {
+  constructor (outerRadius) {
     super();
 
     // Javascript can support about 13 digits with the precision that we need to
     // store the coordinates; this puts a hard limit on galaxy size at 10^16
     // solar systems (because, you know, we totally need things bigger than the
     // IC 1101, the largest observed galaxy to date, which has O(10^14) stars)
-    this.radius = Math.min(radius, 9999999999999);
+    this.outerRadius = Math.min(outerRadius, 9999999999999);
     this.currentCells = {};
   }
 
@@ -36,7 +36,8 @@ class Galaxy extends Model {
       for (let y = cellViewport.top; y <= cellViewport.bottom; y += 1) {
         const key = x + '_' + y;
         if (!this.currentCells[key]) {
-          this.currentCells[key] = new Cell({ x, y }, this.radius);
+          const coordinates = { x, y };
+          this.currentCells[key] = new Cell(coordinates, this.computeStarDensity(coordinates));
         }
         let cell = this.currentCells[key];
         graph.nodes = graph.nodes.concat(cell.solarSystems);
@@ -58,10 +59,11 @@ class Galaxy extends Model {
 
     let cell;
     while (true) {
-      cell = new Cell({
+      const coordinates = {
         x: Math.round(roughDistance * Math.cos(roughAngle)),
         y: Math.round(roughDistance * Math.sin(roughAngle))
-      }, this.radius);
+      };
+      cell = new Cell(coordinates, this.computeStarDensity(coordinates));
       if (cell.solarSystems.length > 0) {
         return cell.solarSystems[0];
       } else {
@@ -94,7 +96,8 @@ class Galaxy extends Model {
         for (let yk = y - k; yk <= y + k; yk++) {
           const key = xk + '_' + yk;
           if (!cellsOnTheWay[key]) {
-            cellsOnTheWay[key] = new Cell({ x: xk, y: yk }, this.radius);
+            const coordinates = { x: xk, y: yk };
+            cellsOnTheWay[key] = new Cell(coordinates, this.computeStarDensity(coordinates));
           }
         }
       }
@@ -201,6 +204,11 @@ class Galaxy extends Model {
       currentNode = previousNodes[currentNode.id];
     }
     return path;
+  }
+  computeStarDensity ({ x, y }) {
+    // Default is to model an elliptical galaxy according to de Vaucouleur's law
+    // (TODO: for now, I'm cheating w/an inverse square thing)
+    return 1 - (x ** 2 + y ** 2) / this.outerRadius ** 2;
   }
 }
 export default Galaxy;

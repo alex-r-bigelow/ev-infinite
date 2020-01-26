@@ -43,7 +43,7 @@ class MapView extends Modal {
 
     // For now, just use the full radius of the universe (we're keeping
     // it small-ish enough to fit in memory / draw completely)
-    const r = window.controller.universe.radius;
+    const r = window.controller.universe.outerRadius;
     const graph = window.controller.universe.getGraph({
       left: -r,
       top: -r,

@@ -5,7 +5,7 @@ import language from './data/language.js';
 import { constructChain } from './utils/nameGenerator.js';
 
 import PlayerShip from './models/PlayerShip/PlayerShip.js';
-import Galaxy from './models/Universe/Galaxy.js';
+import SpiralGalaxy from './models/Universe/SpiralGalaxy.js';
 
 import ViewportView from './views/ViewportView/ViewportView.js';
 import MiniMapView from './views/MiniMapView/MiniMapView.js';
@@ -16,7 +16,7 @@ class Controller {
   constructor () {
     this.paused = false;
 
-    this.universe = new Galaxy(15);
+    this.universe = new SpiralGalaxy(9, Math.PI / 4, 18, 6, 1.25, 36);
     this.currentSystem = this.universe.getASolarSystem();
     this.targetSystem = null;
     this.targetPath = [];
