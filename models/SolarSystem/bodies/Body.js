@@ -1,7 +1,7 @@
+/* globals uki */
 import { markovName } from '../../../utils/nameGenerator.js';
-import IntrospectableMixin from '../../../utils/IntrospectableMixin.js';
 
-class Body extends IntrospectableMixin(class {}) {
+class Body extends uki.utils.Introspectable {
   constructor (layer, seed) {
     super();
     this.layer = layer;
@@ -9,6 +9,7 @@ class Body extends IntrospectableMixin(class {}) {
     this.orbiting = [];
     this.satellites = [];
   }
+
   get orbitCenter () {
     let x = 0;
     let y = 0;
@@ -22,12 +23,14 @@ class Body extends IntrospectableMixin(class {}) {
     }
     return { x, y };
   }
+
   get details () {
     if (!this._detailsCache) {
       this._detailsCache = this.computeDetails();
     }
     return this._detailsCache;
   }
+
   computeDetails () {
     const numberGenerator = new Math.seedrandom(this.seed); // eslint-disable-line new-cap
     return {

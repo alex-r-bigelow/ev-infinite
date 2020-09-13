@@ -1,22 +1,27 @@
-/* globals d3 */
+/* globals uki */
 import keyBindings from './config/keyBindings.js';
 import language from './data/language.js';
 
 import { constructChain } from './utils/nameGenerator.js';
 
 import PlayerShip from './models/PlayerShip/PlayerShip.js';
-import SpiralGalaxy from './models/Universe/SpiralGalaxy.js';
+// import SpiralGalaxy from './models/Universe/SpiralGalaxy.js';
+import Galaxy from './models/Universe/Galaxy.js';
 
 import ViewportView from './views/ViewportView/ViewportView.js';
 import MiniMapView from './views/MiniMapView/MiniMapView.js';
 
 import MapView from './views/MapView/MapView.js';
+import PauseView from './views/PauseView/PauseView.js';
 
 class Controller {
   constructor () {
+    this.keyBindings = keyBindings;
+
     this.paused = false;
 
-    this.universe = new SpiralGalaxy(9, Math.PI / 4, 18, 6, 1.25, 36);
+    // this.universe = new SpiralGalaxy(9, Math.PI / 4, 18, 6, 1.25, 36);
+    this.universe = new Galaxy(9);
     this.currentSystem = this.universe.getASolarSystem();
     this.targetSystem = null;
     this.targetPath = [];
@@ -33,6 +38,7 @@ class Controller {
       .filter(d => d.country === 'Japan')
       .map(d => d.name));
   }
+
   setupEventListeners () {
     this.pressedKeys = {};
 
@@ -48,21 +54,22 @@ class Controller {
     window.onkeydown = event => {
       this.pressedKeys[event.key] = true;
 
-      if (event.key === keyBindings['pause']) {
-        if (this.paused && !this.modal) {
+      if (event.key === this.keyBindings.pause) {
+        if (this.paused && !uki.modal?.visible) {
           this.resume();
         } else {
           this.pause();
         }
       }
-      if (event.key === keyBindings['showMap']) {
-        this.pause(MapView);
+      if (event.key === this.keyBindings.showMap) {
+        this.pause(new MapView());
       }
     };
     window.onkeyup = event => {
       delete this.pressedKeys[event.key];
     };
   }
+
   renderAllViews (quick = false) {
     for (const view of Object.values(this.views)) {
       if (quick) {
@@ -71,10 +78,8 @@ class Controller {
         view.render();
       }
     }
-    if (!quick && this.modal) {
-      this.modal.render();
-    }
   }
+
   tick () {
     // Don't update any game state while paused
     if (this.paused) {
@@ -82,21 +87,21 @@ class Controller {
     }
 
     // Respond to user input
-    if (this.pressedKeys[keyBindings['turnLeft']]) {
+    if (this.pressedKeys[this.keyBindings.turnLeft]) {
       this.playerShip.currentShip.turnLeft();
     }
-    if (this.pressedKeys[keyBindings['turnRight']]) {
+    if (this.pressedKeys[this.keyBindings.turnRight]) {
       this.playerShip.currentShip.turnRight();
     }
-    if (this.pressedKeys[keyBindings['accelerate']]) {
+    if (this.pressedKeys[this.keyBindings.accelerate]) {
       this.playerShip.currentShip.accelerate();
     }
-    if (this.pressedKeys[keyBindings['initiateJump']]) {
+    if (this.pressedKeys[this.keyBindings.initiateJump]) {
       if (this.targetPath.length > 0) {
         const nextSystem = this.targetPath[0].target;
         this.playerShip.currentShip.initiateJump(this.currentSystem, nextSystem);
       }
-      delete this.pressedKeys[keyBindings['initiateJump']];
+      delete this.pressedKeys[this.keyBindings.initiateJump];
     }
 
     // TODO: AI actions...
@@ -107,6 +112,7 @@ class Controller {
     // ViewportView needs to tick with the clock as well for some of its effects
     this.views.ViewportView.tick();
   }
+
   startGameLoop () {
     const timestamp = () => {
       return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
@@ -115,7 +121,7 @@ class Controller {
     let now;
     let dt = 0;
     let last = timestamp();
-    let step = 1 / 60;
+    const step = 1 / 60;
 
     const frame = () => {
       now = timestamp();
@@ -130,24 +136,21 @@ class Controller {
     };
     window.requestAnimationFrame(frame);
   }
-  pause (Modal) {
+
+  pause (modal = new PauseView()) {
     if (this.paused) {
       // already paused
       return;
     }
     this.paused = true;
-    if (!Modal) {
-      d3.select('.modal .contents').html(`<h1>Paused</h1><p>Hit ${keyBindings['pause']} to resume</p>`);
-    } else {
-      this.modal = new Modal();
-    }
-    d3.select('.modal').style('display', null);
+    uki.showModal(modal);
   }
+
   resume () {
     this.paused = false;
-    delete this.modal;
-    d3.select('.modal').style('display', 'none');
+    uki.hideModal();
   }
+
   setTargetSystem (system) {
     if (system === null) {
       this.targetPath = [];
@@ -157,6 +160,7 @@ class Controller {
     this.targetSystem = this.targetPath.length === 0 ? null : system;
     this.renderAllViews(false);
   }
+
   switchToNextSystem () {
     if (this.targetPath.length > 0) {
       const nextSystem = this.targetPath.splice(0, 1)[0].target;

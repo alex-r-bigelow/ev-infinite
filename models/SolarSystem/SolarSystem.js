@@ -13,6 +13,7 @@ class SolarSystem extends Model {
     this.coordinates = { x, y };
     this.loadedNeighbors = {};
   }
+
   get details () {
     if (!this._detailsCache) {
       const numberGenerator = new Math.seedrandom(this.coordinates); // eslint-disable-line new-cap
@@ -22,6 +23,7 @@ class SolarSystem extends Model {
     }
     return this._detailsCache;
   }
+
   get bodies () {
     if (this._bodyCache) {
       return this._bodyCache;
@@ -98,6 +100,7 @@ class SolarSystem extends Model {
 
     return this._bodyCache;
   }
+
   loadNeighbor (neighborSystem) {
     if (!this.loadedNeighbors[neighborSystem.id]) {
       this.loadedNeighbors[neighborSystem.id] = neighborSystem;

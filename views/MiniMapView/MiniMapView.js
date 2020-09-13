@@ -1,25 +1,30 @@
-/* globals d3 */
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
+/* globals d3, uki */
 
-class MiniMapView extends View {
-  constructor () {
-    super(d3.select('.MiniMapView'), [
+class MiniMapView extends uki.ui.SvgView {
+  constructor (options = {}) {
+    options.d3el = d3.select('.MiniMapView svg');
+    options.resources = options.resources || [];
+    options.resources.push(...[
       { type: 'less', url: 'views/MiniMapView/style.less' },
-      { type: 'text', url: 'views/MiniMapView/template.html' }
+      { type: 'text', url: 'views/MiniMapView/template.svg', name: 'template' }
     ]);
+    super(options);
   }
-  setup () {
-    this.d3el.html(this.resources[1]);
+
+  async setup () {
+    await super.setup(...arguments);
+    this.d3el.html(this.getNamedResource('template'));
   }
-  draw () {
-    this._size = this.d3el.node().getBoundingClientRect().width;
-    this.d3el.select('svg')
-      .attr('width', this._size)
-      .attr('height', this._size);
+
+  async draw () {
+    await super.draw(...arguments);
+
+    this._size = this.getBounds().width;
 
     this.quickDrawReady = true;
     this.quickDraw();
   }
+
   quickDraw () {
     if (this.quickDrawReady) {
       this.drawCurrentSystem();
@@ -27,6 +32,7 @@ class MiniMapView extends View {
       this.drawShips();
     }
   }
+
   drawCurrentSystem () {
     const bodies = window.controller.currentSystem.bodies;
 
@@ -93,6 +99,7 @@ class MiniMapView extends View {
       .attr('cy', d => d.y)
       .attr('r', d => d.r);
   }
+
   drawPlayerShip () {
     const ship = window.controller.playerShip.currentShip;
     const x = this.scale(ship.x);
@@ -101,6 +108,7 @@ class MiniMapView extends View {
     this.d3el.select('.playerShip')
       .attr('transform', `translate(${x},${y}) rotate(${angle})`);
   }
+
   drawShips () {
     // TODO
   }

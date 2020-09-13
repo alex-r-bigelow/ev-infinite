@@ -1,7 +1,6 @@
-import { Model } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+/* globals uki */
 
-class Ship extends IntrospectableMixin(Model) {
+class Ship extends uki.utils.IntrospectableMixin(uki.Model) {
   constructor () {
     super();
     this.jumpingStage = -1;
@@ -22,11 +21,13 @@ class Ship extends IntrospectableMixin(Model) {
     this.x = 0;
     this.y = 0;
   }
+
   getSvg () {
     // Dummy placeholder that just draws a triangle; do something sexier in the future
     const backRadius = this.radius * Math.sqrt(2) / 2;
     return `<path fill="#E6AB02" d="M${this.radius},0L${-backRadius},${backRadius}L${-backRadius},${-backRadius}Z"></path>`;
   }
+
   tick () {
     let velocity;
     switch (this.jumpingStage) {
@@ -48,7 +49,7 @@ class Ship extends IntrospectableMixin(Model) {
       case 1:
         // Rotating
         const remainingAngle = this.normalizeAngle(this.jumpDirection - this.direction);
-        let turnRate = this.turnRate * Math.sign(remainingAngle);
+        const turnRate = this.turnRate * Math.sign(remainingAngle);
         if (Math.abs(turnRate) > Math.abs(remainingAngle)) {
           this.direction = this.jumpDirection;
           this.jumpingStage = 2;
@@ -84,14 +85,17 @@ class Ship extends IntrospectableMixin(Model) {
     this.x += Ship.SYSTEM_SCALE_FACTOR * this.velocityX;
     this.y += Ship.SYSTEM_SCALE_FACTOR * this.velocityY;
   }
+
   turnLeft () {
     this.direction = this.normalizeAngle(this.direction - this.turnRate);
     this.cancelJump();
   }
+
   turnRight () {
     this.direction = this.normalizeAngle(this.direction + this.turnRate);
     this.cancelJump();
   }
+
   accelerate () {
     this.velocityX += this.forwardRate * Math.cos(this.direction);
     this.velocityY += this.forwardRate * Math.sin(this.direction);
@@ -100,6 +104,7 @@ class Ship extends IntrospectableMixin(Model) {
       this.capVelocity();
     }
   }
+
   capVelocity () {
     // Cap the velocity
     let velocity = Math.sqrt(this.velocityX ** 2 + this.velocityY ** 2);
@@ -107,14 +112,16 @@ class Ship extends IntrospectableMixin(Model) {
     if (velocity <= 0.25) {
       velocity = 0;
     }
-    let vAngle = Math.atan2(this.velocityY, this.velocityX);
+    const vAngle = Math.atan2(this.velocityY, this.velocityX);
 
     this.velocityX = velocity * Math.cos(vAngle);
     this.velocityY = velocity * Math.sin(vAngle);
   }
+
   normalizeAngle (theta) {
     return Math.atan2(Math.sin(theta), Math.cos(theta));
   }
+
   cancelJump () {
     if (this.jumpingStage < 2) {
       this.jumpingStage = -1;
@@ -122,6 +129,7 @@ class Ship extends IntrospectableMixin(Model) {
       this.jumpDirection = null;
     }
   }
+
   initiateJump (sourceSystem, targetSystem) {
     if (this.jumpingStage === -1) {
       this.jumpingStage = 0;

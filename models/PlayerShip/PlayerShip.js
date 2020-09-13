@@ -1,7 +1,7 @@
-import { Model } from '../../node_modules/uki/dist/uki.esm.js';
+/* globals uki */
 import Ship from '../Ship/Ship.js';
 
-class PlayerShip extends Model {
+class PlayerShip extends uki.Model {
   constructor () {
     super();
     this.currentShip = new Ship();

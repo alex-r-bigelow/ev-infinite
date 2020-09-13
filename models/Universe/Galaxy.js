@@ -37,23 +37,24 @@ class Galaxy extends Model {
         const key = x + '_' + y;
         if (!this.currentCells[key]) {
           const coordinates = { x, y };
-          this.currentCells[key] = new Cell(coordinates, this.computeStarDensity(coordinates));
+          this.currentCells[key] = new Cell(coordinates, this);
         }
-        let cell = this.currentCells[key];
+        const cell = this.currentCells[key];
         graph.nodes = graph.nodes.concat(cell.solarSystems);
         graph.links = graph.links.concat(cell.generateInternalLinks());
         if (x > cellViewport.left) {
-          let leftLinks = this.currentCells[(x - 1) + '_' + y].generateRightLinks(cell);
+          const leftLinks = this.currentCells[(x - 1) + '_' + y].generateRightLinks(cell);
           graph.links = graph.links.concat(leftLinks);
         }
         if (y > cellViewport.top) {
-          let topLinks = this.currentCells[x + '_' + (y - 1)].generateBottomLinks(cell);
+          const topLinks = this.currentCells[x + '_' + (y - 1)].generateBottomLinks(cell);
           graph.links = graph.links.concat(topLinks);
         }
       }
     }
     return graph;
   }
+
   getASolarSystem (roughDistance = 0, roughAngle = Math.random() * 2 * Math.PI) {
     // get the first node in the cell that closest fits these parameters
 
@@ -63,7 +64,7 @@ class Galaxy extends Model {
         x: Math.round(roughDistance * Math.cos(roughAngle)),
         y: Math.round(roughDistance * Math.sin(roughAngle))
       };
-      cell = new Cell(coordinates, this.computeStarDensity(coordinates));
+      cell = new Cell(coordinates, this);
       if (cell.solarSystems.length > 0) {
         return cell.solarSystems[0];
       } else {
@@ -72,6 +73,7 @@ class Galaxy extends Model {
       }
     }
   }
+
   getPathBetweenSystems (a, b) {
     if (a.id === b.id) {
       return [];
@@ -97,7 +99,7 @@ class Galaxy extends Model {
           const key = xk + '_' + yk;
           if (!cellsOnTheWay[key]) {
             const coordinates = { x: xk, y: yk };
-            cellsOnTheWay[key] = new Cell(coordinates, this.computeStarDensity(coordinates));
+            cellsOnTheWay[key] = new Cell(coordinates, this);
           }
         }
       }
@@ -205,6 +207,7 @@ class Galaxy extends Model {
     }
     return path;
   }
+
   computeStarDensity ({ x, y }) {
     // Default is to model an elliptical galaxy according to de Vaucouleur's law
     // (TODO: for now, I'm cheating w/an inverse square thing)

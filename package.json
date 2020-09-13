@@ -1,11 +1,11 @@
 {
   "name": "ev-infinite",
   "version": "0.1.0",
-  "description": "Silly attempt to make a browser-based Escape Velocity clone",
+  "description": "Silly attempt to make a procedural, browser-based Escape Velocity clone",
   "main": "index.js",
   "scripts": {
     "serve": "serve .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -18,15 +18,43 @@
   },
   "homepage": "https://github.com/alex-r-bigelow/ev-infinite#readme",
   "dependencies": {
-    "d3": "^5.9.7",
-    "jStat": "^1.8.5",
-    "less": "^3.9.0",
+    "@ukijs/ui": "^0.2.1",
+    "d3": "^6.1.1",
+    "jstat": "^1.9.3",
+    "less": "^3.12.2",
     "noisejs": "^2.1.0",
-    "seedrandom": "^3.0.1",
-    "three": "^0.106.2",
-    "uki": "^0.3.0"
+    "seedrandom": "^3.0.5",
+    "three": "^0.120.1",
+    "uki": "^0.7.2"
+  },
+  "eslintConfig": {
+    "extends": "standard",
+    "rules": {
+      "semi": [
+        2,
+        "always"
+      ],
+      "no-extra-semi": 2,
+      "semi-spacing": [
+        2,
+        {
+          "before": false,
+          "after": true
+        }
+      ]
+    },
+    "globals": {
+      "globalThis": false
+    }
   },
   "devDependencies": {
-    "serve": "^11.0.2"
+    "eslint": "^7.8.1",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "serve": "^11.3.2"
   }
 }

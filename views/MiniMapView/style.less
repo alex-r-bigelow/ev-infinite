@@ -1,31 +1,29 @@
-@import '../../style/colors.less';
-
 .MiniMapView {
   .star circle {
     fill: none;
     stroke-width: 1px;
-    stroke: @DarkOrange;
+    stroke: var(--dark-orange);
   }
   .planet circle {
     fill: none;
     stroke-width: 1px;
-    stroke: @DarkTeal;
+    stroke: var(--dark-teal);
   }
   .spaceStation circle {
     fill: none;
     stroke-width: 1px;
-    stroke: @DarkPurple;
+    stroke: var(--dark-purple);
   }
   .playerShip path {
-    fill: @DarkYellow;
+    fill: var(--dark-yellow);
   }
   circle.orbit {
     fill: none;
     stroke-width: 1px;
-    stroke: @darkBackgroundColor;
+    stroke: var(--background-color-softer);
   }
   .bodyDot text {
     font-size: 9px;
-    fill: @textColor;
+    fill: var(--text-color);
   }
 }

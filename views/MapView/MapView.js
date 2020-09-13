@@ -1,35 +1,47 @@
-/* globals d3 */
-import Modal from '../Modal/Modal.js';
+/* globals d3, uki */
 
-class MapView extends Modal {
-  constructor () {
-    super([
+class MapView extends uki.ui.ModalView {
+  constructor (options = {}) {
+    options.resources = options.resources || [];
+    options.resources.push(...[
       { type: 'less', url: 'views/MapView/style.less' },
-      { type: 'text', url: 'views/MapView/template.html' }
+      { type: 'text', url: 'views/MapView/template.html', name: 'template' }
     ]);
+    options.buttonSpecs = [{
+      label: 'Close',
+      primary: true,
+      onclick: () => { window.controller.resume(); }
+    }];
+    super(options);
   }
-  setup () {
-    super.setup();
-    this.d3el.html(this.resources[1]);
+
+  async setup () {
+    await super.setup(...arguments);
+    this.d3el.classed('MapView', true);
+
+    this.modalContentEl.html(this.getNamedResource('template'));
 
     this.currentTransform = d3.zoomIdentity;
 
-    this.d3el.select('svg')
+    this.modalContentEl.select('svg')
       .call(d3.zoom()
-        .on('zoom', () => {
-          this.currentTransform = d3.event.transform;
-          this.d3el.selectAll('.systems, .links')
-            .attr('transform', d3.event.transform);
+        .on('zoom', event => {
+          this.currentTransform = event.transform;
+          this.modalContentEl.selectAll('.systems, .links')
+            .attr('transform', event.transform);
         })
         .on('end', () => { this.render(); }));
 
     this.d3el.select('.ok.button')
       .on('click', () => { window.controller.resume(); });
   }
-  draw () {
+
+  async draw () {
+    await super.draw(...arguments);
+
     const width = window.innerWidth - 200;
     const height = window.innerHeight - 200;
-    this.d3el.select('svg')
+    this.modalContentEl.select('svg')
       .attr('width', width)
       .attr('height', height);
 
@@ -56,8 +68,9 @@ class MapView extends Modal {
     // TODO: draw pre-rendered galactic textures, etc; don't bother rendering
     // individual systems beyond this.currentTransform.k < 0.1 or so
   }
+
   drawSystems (graph) {
-    let systems = this.d3el.select('.systems').selectAll('.system')
+    let systems = this.modalContentEl.select('.systems').selectAll('.system')
       .data(graph.nodes, d => d.id);
     systems.exit().remove();
     const systemsEnter = systems.enter().append('g').classed('system', true);
@@ -82,17 +95,18 @@ class MapView extends Modal {
       return window.controller.targetSystem !== null && d.id === window.controller.targetSystem.id;
     }).classed('current', d => d.id === window.controller.currentSystem.id);
 
-    systemsEnter.on('click', d => {
+    systemsEnter.on('click', (event, d) => {
       window.controller.setTargetSystem(d);
     });
   }
+
   drawLinks (graph) {
     const targetedLinkLookup = {};
     for (const { source, target } of window.controller.targetPath) {
       targetedLinkLookup[source.id + '_' + target.id] = true;
     }
 
-    let links = this.d3el.select('.links').selectAll('.link')
+    let links = this.modalContentEl.select('.links').selectAll('.link')
       .data(graph.links, d => d.source.id + '_' + d.target.id);
     links.exit().remove();
     const linksEnter = links.enter().append('g').classed('link', true);

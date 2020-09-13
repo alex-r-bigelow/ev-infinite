@@ -9,6 +9,7 @@ class SpiralGalaxy extends Galaxy {
     this.barRadius = barRadius;
     this.armLayers = armLayers;
   }
+
   computeStarDensity ({ x, y }) {
     const theta = Math.atan2(y, x);
     const radius = Math.sqrt(x ** 2 + y ** 2);

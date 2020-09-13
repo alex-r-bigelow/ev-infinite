@@ -1,20 +1,20 @@
-@import './colors.less';
-@import './measurements.less';
-
-@hudSize: 20em;
+:root {
+  --content-padding: 1em;
+  --hud-size: 20em;
+}
 
 .ViewportView, .hud {
   position: absolute;
-  top: @contentPadding;
-  bottom: @contentPadding;
+  top: var(--content-padding);
+  bottom: var(--content-padding);
 }
 .ViewportView {
-  left: @contentPadding;
-  width: calc(100% - @hudSize - 3 * @contentPadding);
+  left: var(--content-padding);
+  width: calc(100% - var(--hud-size) - 3 * var(--content-padding));
 }
 .hud {
-  right: @contentPadding;
-  width: @hudSize;
+  right: var(--content-padding);
+  width: var(--hud-size);
 
   display: flex;
   flex-direction: column;
@@ -24,47 +24,18 @@
   overflow-y: scroll;
 }
 
+.MiniMapView {
+  min-height: calc(var(--hud-size) - 2 * var(--content-padding));
+}
+
 .ViewportView, .MiniMapView, .StatusBarView, .MessageBoxView {
-  border: 1px solid @backgroundColor;
-  border-radius: @borderRadius;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--corner-radius);
 }
 .MiniMapView, .StatusBarView, .MessageBoxView {
-  background-color: @darkestBackgroundColor;
+  padding: var(--content-padding);
+  background-color: var(--background-color-richer);
 }
 .StatusBarView, .MessageBoxView {
-  margin-top: @contentPadding;
-}
-
-.modal {
-  .overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: fade(@shadowColor, 90%);
-  }
-  .contents {
-    background-color: @darkestBackgroundColor;
-    border: 1px solid @backgroundColor;
-    border-radius: @borderRadius;
-    padding: 1em;
-
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    min-width: 30em;
-    height: fit-content;
-
-    .dialogButtons {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      .button {
-        margin-left: 1em;
-      }
-    }
-  }
+  margin-top: var(--content-padding);
 }

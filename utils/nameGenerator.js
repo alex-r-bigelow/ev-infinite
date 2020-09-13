@@ -70,7 +70,7 @@ function scaleChain (chain) {
       tableLen[key] += weighted;
     }
   }
-  chain['tableLen'] = tableLen;
+  chain.tableLen = tableLen;
   return chain;
 }
 
@@ -99,7 +99,7 @@ function markovName (chain, generator = Math.random) {
 }
 
 function selectLink (chain, key, generator) {
-  var len = chain['tableLen'][key];
+  var len = chain.tableLen[key];
   var idx = Math.floor(generator() * len);
 
   var t = 0;
